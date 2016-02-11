@@ -1,34 +1,29 @@
-//
 //  ViewController.swift
 //  CollegeBuilder
-//
 //  Created by cstark on 1/20/16.
 //  Copyright © 2016 cstark. All rights reserved.
-//
-
 import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
     @IBOutlet weak var myTableView: UITableView!
     var college: [College] = []
-    
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         myTableView.dataSource = self
         myTableView.delegate = self
-        college.append(College(Name: "Princeton", Location: "New Jersey", Numberofstudents: 5391, Image:UIImage(named: "Princeton")!))
-        college.append(College(Name: "Harvard", Location: "Massachusetts", Numberofstudents: 6694, Image: UIImage(named: "Harvard")!))
-        college.append(College(Name: "Yale", Location: "Connecticut", Numberofstudents: 5477, Image: UIImage(named: "Yale")!))
-        college.append(College(Name: "Columbia", Location: "NYC", Numberofstudents: 6170, Image: UIImage(named: "Columbia")!))
-        
+        college.append(College(Name: "Princeton", Location: "New Jersey", Numberofstudents: 5391, Image:UIImage(named: "Princeton")!, Website:("www.princeton.edu/main/")))
+        college.append(College(Name: "Harvard", Location: "Massachusetts", Numberofstudents: 6694, Image: UIImage(named: "Harvard")!, Website:("www.harvard.edu")))
+        college.append(College(Name: "Yale", Location: "Connecticut", Numberofstudents: 5477, Image: UIImage(named: "Yale")!,Website:("www.yale.edu")))
+        college.append(College(Name: "Columbia", Location: "NYC", Numberofstudents: 6170, Image: UIImage(named: "Columbia")!, Website:("www.columbia.edu")))
     }
+    
     @IBAction func editButtonTapped(sender: AnyObject)
     {
         myTableView.editing = !myTableView.editing
     }
+    
     @IBAction func addButtonTapped(sender: UIBarButtonItem)
     {
         let myAlert = UIAlertController(title:"Add College" , message: nil, preferredStyle: .Alert)
@@ -38,7 +33,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let addAction = UIAlertAction(title: "Add", style: .Default){ (addAction) -> Void in
         let collegeNameTextField = myAlert.textFields![0] as UITextField
         let collegeLocationTextField = myAlert.textFields![1]
-            self.college.append(College(Name: collegeNameTextField.text!, Location: collegeLocationTextField.text!))
+        let collegeWebsiteTextField = myAlert.textFields![2]
+            self.college.append(College(Name: collegeNameTextField.text!, Location: collegeLocationTextField.text!, Website: collegeWebsiteTextField.text!))
             self.myTableView.reloadData()
         }
         myAlert.addAction(addAction)
@@ -48,8 +44,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         myAlert.addTextFieldWithConfigurationHandler{(collegeLocationTextField) -> Void in
             collegeLocationTextField.placeholder = "add College Location"
         }
+        myAlert.addTextFieldWithConfigurationHandler{(collegeWebsiteTextField) -> Void in
+            collegeWebsiteTextField.placeholder = "add College Website"
+        }
             self.presentViewController(myAlert, animated: true, completion: nil)
     }
+    
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath)
     {
         if editingStyle == .Delete
@@ -77,10 +77,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         myTableViewCell.detailTextLabel?.text = college[indexPath.row].location
         return myTableViewCell
     }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return college.count
     }
+    
+   
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
     {
       let detailVC = segue.destinationViewController as! DetailViewController
